@@ -1,0 +1,65 @@
+################################################################################
+# Build system
+################################################################################
+
+FROM debian:stretch
+
+MOUNT /root/.cache
+MOUNT /var/cache/apt
+MOUNT /var/lib/apt
+
+WORKDIR /build
+RUN echo 'alias l="ls -lsah"' > ~/.bashrc \
+ && apt-get -y update \
+ && apt-get -y install gnupg \
+ && apt-key adv --fetch-keys http://nginx.org/keys/nginx_signing.key \
+ && echo "deb-src http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list.d/nginx.list \
+ && apt-get -y update \
+ && apt-get -y install dpkg-dev build-essential zlib1g-dev libpcre3 libpcre3-dev unzip wget clang \
+ && apt-get -y build-dep nginx
+
+RUN apt-get source nginx={{ .NginxVersion }}-1~stretch
+
+ADD https://github.com/pagespeed/ngx_pagespeed/archive/v{{ .PagespeedVersion }}-stable.tar.gz /build/pagespeed-{{ .PagespeedVersion }}.tar.gz
+ADD https://dl.google.com/dl/page-speed/psol/{{ .PagespeedVersion }}-x64.tar.gz /build/psol-{{ .PagespeedVersion }}.tar.gz
+
+RUN mkdir -p /build/nginx-{{ .NginxVersion }}/debian/modules \
+ && ( cd /build/nginx-{{ .NginxVersion }}/debian/modules \
+   && tar xzf /build/pagespeed-{{ .PagespeedVersion }}.tar.gz \
+   && mv ngx_pagespeed-{{ .PagespeedVersion }}-stable ngx_pagespeed-{{ .PagespeedVersion }} ) \
+ && ( cd /build/nginx-{{ .NginxVersion }}/debian/modules/ngx_pagespeed-{{ .PagespeedVersion }} \
+   && tar xzf /build/psol-{{ .PagespeedVersion }}.tar.gz )
+
+RUN sed "/LDFLAGS /a WITH_PAGESPEED := --add-module=/build/nginx-{{ .NginxVersion }}/debian/modules/ngx_pagespeed-{{ .PagespeedVersion }}" -i /build/nginx-{{ .NginxVersion }}/debian/rules \
+ && sed 's/^\s\+CFLAGS=.*$/& $(WITH_PAGESPEED)/g' -i /build/nginx-{{ .NginxVersion }}/debian/rules
+
+RUN ( cd /build/nginx-{{ .NginxVersion }} && dpkg-buildpackage -b )
+
+EXPORT nginx_{{ .NginxVersion }}-1~stretch_amd64.deb
+
+################################################################################
+# Runtime system
+################################################################################
+
+FROM debian:stretch
+MOUNT /root/.cache
+MOUNT /var/cache/apt
+MOUNT /var/lib/apt
+
+IMPORT nginx_{{ .NginxVersion }}-1~stretch_amd64.deb /tmp
+RUN echo 'alias l="ls -lsah"' > ~/.bashrc \
+ && apt-get update -y \
+ && apt-get install -y libssl1.1 \
+ && dpkg -i /tmp/nginx_{{ .NginxVersion }}-1~stretch_amd64.deb \
+ && ln -sf /dev/stdout /var/log/nginx/access.log \
+ && ln -sf /dev/stderr /var/log/nginx/error.log \
+ && rm /tmp/*.deb
+
+VOLUME ["/var/cache/nginx"]
+
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
+
+PUSH {{ .DockerImage }}
+

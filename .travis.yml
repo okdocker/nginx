@@ -16,6 +16,6 @@ install:
   - tar xvfz rocker-1.3.1-linux_amd64.tar.gz
 
 script:
-  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$NGINX_VARIANT PagespeedVersion=$PAGESPEED_VERSION
-  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$NGINX_VARIANT PagespeedVersion=$PAGESPEED_VERSION
+  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$NGINX_VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
+  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$NGINX_VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
 

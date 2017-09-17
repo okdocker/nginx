@@ -13,7 +13,7 @@ RUN echo 'alias l="ls -lsah"' > ~/.bashrc \
  && apt-get -y update \
  && apt-get -y install gnupg \
  && apt-key adv --fetch-keys http://nginx.org/keys/nginx_signing.key \
- && echo "deb-src http://nginx.org/packages/{{ .NginxVariant }}/debian/ stretch nginx" >> /etc/apt/sources.list.d/nginx.list \
+ && echo "deb-src http://nginx.org/packages{{ if ne .NginxVariant "stable" }}/{{ .NginxVariant }}{{ end }}/debian/ stretch nginx" >> /etc/apt/sources.list.d/nginx.list \
  && apt-get -y update \
  && apt-get -y install dpkg-dev build-essential zlib1g-dev libpcre3 libpcre3-dev unzip wget clang \
  && apt-get -y build-dep nginx

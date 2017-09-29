@@ -10,9 +10,10 @@ env:
     - secure: "ZmK/v+vzzig5pk0432WRR2QsvzsPPiHF5Sge8UlO4vzw4cMPd3Xq08b7vnIreOwMlB4FCsEnuHKqdseU3LGYNpar8TYjNN2A7l/j1U2bG/x6TFzCqQTo98XfgRlQ9KYyxQj3YfkYFeYwM8tqq/KbYDypoEZf3SDEGrrcFoDOVQGb0zTlIpPftCDH1J5d4FD6fpB6hgytoAHXRWt3aipMxiDEpK5Klnxku/vIDTvE0E+SLpYocVaj7AhuCsy5jDJp6OM6lOKTSl/YwSyfjDibs4TSs5jT54rfMBRMG6/RQ95r3oyPrjqLQn+UNEEG3vyvMKgGsYbspUH3EV53HdVfCMvWSmrS3yYz/ygiog81HSerQr+t8UQVah0NEnS1Za967/fCldhPfo2Yp9cc4X4PKFg2JSPKp0R0Ac2hDliJEWiv96JfecYx9b2zYTxPLLL1OepUhcEFLIWxfLU4nXZckx4aPvDtwjC9URta7ABv/5sg+0vah6Kof6ZEd2poeKbF1C2BnGNSiR9kCagaBgjD9OmD+bWgrSeFxf3XPO6BZVMy1mrUnJKaLX0RZgbUIhQN/3VoBtBsN0jmPkTx/nZCwzTF/Ytz91ud1sBjlQODMBV0W5MmM+nbOk4EXRQDTZoRJuksBZVaO/CaGT8+A2Xs0ymcZmsZ+QJF2+Ge71mTEgQ="
     - COMMIT=${TRAVIS_COMMIT::8}
     - export REPO=okdocker/nginx
-    - PAGESPEED_VERSION=1.12.34.2
+    - PAGESPEED_VERSION=1.12.34.3
+    - PSOL_VERSION=1.12.34.2
   matrix:
-    - NGINX_VERSION=1.13.3 VARIANT=mainline
+    - NGINX_VERSION=1.13.5 VARIANT=mainline
     - NGINX_VERSION=1.12.1 VARIANT=stable
 
 install:
@@ -20,8 +21,8 @@ install:
   - tar xvfz rocker-1.3.1-linux_amd64.tar.gz
 
 script:
-  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
-  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
-  - ./rocker build --auth $QUAY_USER:$QUAY_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=quay.io/$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
-  - ./rocker build --auth $QUAY_USER:$QUAY_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=quay.io/$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION
+  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION -var PsolVersion=$PSOL_VERSION
+  - ./rocker build --auth $DOCKER_USER:$DOCKER_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION -var PsolVersion=$PSOL_VERSION
+  - ./rocker build --auth $QUAY_USER:$QUAY_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=quay.io/$REPO:$NGINX_VERSION -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION -var PsolVersion=$PSOL_VERSION
+  - ./rocker build --auth $QUAY_USER:$QUAY_PASS --push -var TravisBuildNumber=$TRAVIS_BUILD_NUMBER -var Commit=$COMMIT -var DockerImage=quay.io/$REPO:$VARIANT -var NginxVersion=$NGINX_VERSION -var NginxVariant=$VARIANT -var PagespeedVersion=$PAGESPEED_VERSION -var PsolVersion=$PSOL_VERSION
 

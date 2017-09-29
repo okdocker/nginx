@@ -21,14 +21,14 @@ RUN echo 'alias l="ls -lsah"' > ~/.bashrc \
 RUN apt-get source nginx={{ .NginxVersion }}-1~stretch
 
 ADD https://github.com/pagespeed/ngx_pagespeed/archive/v{{ .PagespeedVersion }}-stable.tar.gz /build/pagespeed-{{ .PagespeedVersion }}.tar.gz
-ADD https://dl.google.com/dl/page-speed/psol/{{ .PagespeedVersion }}-x64.tar.gz /build/psol-{{ .PagespeedVersion }}.tar.gz
+ADD https://dl.google.com/dl/page-speed/psol/{{ .PsolVersion }}-x64.tar.gz /build/psol-{{ .PsolVersion }}.tar.gz
 
 RUN mkdir -p /build/nginx-{{ .NginxVersion }}/debian/modules \
  && ( cd /build/nginx-{{ .NginxVersion }}/debian/modules \
    && tar xzf /build/pagespeed-{{ .PagespeedVersion }}.tar.gz \
    && mv ngx_pagespeed-{{ .PagespeedVersion }}-stable ngx_pagespeed-{{ .PagespeedVersion }} ) \
  && ( cd /build/nginx-{{ .NginxVersion }}/debian/modules/ngx_pagespeed-{{ .PagespeedVersion }} \
-   && tar xzf /build/psol-{{ .PagespeedVersion }}.tar.gz )
+   && tar xzf /build/psol-{{ .PsolVersion }}.tar.gz )
 
 RUN sed "/LDFLAGS /a WITH_PAGESPEED := --add-module=/build/nginx-{{ .NginxVersion }}/debian/modules/ngx_pagespeed-{{ .PagespeedVersion }}" -i /build/nginx-{{ .NginxVersion }}/debian/rules \
  && sed 's/^\s\+CFLAGS=.*$/& $(WITH_PAGESPEED)/g' -i /build/nginx-{{ .NginxVersion }}/debian/rules
@@ -55,9 +55,9 @@ RUN echo 'alias l="ls -lsah"' > ~/.bashrc \
  && ln -sf /dev/stderr /var/log/nginx/error.log \
  && rm /tmp/*.deb
 
-VOLUME ["/var/cache/nginx"]
-
+WORKDIR /var/www
 EXPOSE 80 443
+VOLUME ["/var/cache/nginx"]
 
 CMD ["nginx", "-g", "daemon off;"]
 

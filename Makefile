@@ -2,7 +2,7 @@ DOCKER ?= $(shell which docker)
 ROCKER ?= $(shell [ -x $(GOPATH)/bin/rocker ] && echo $(GOPATH)/bin/rocker || which rocker)
 ROCKER_OPTIONS ?=
 # see https://github.com/pagespeed/ngx_pagespeed/issues/1451
-NGINX_VERSION ?= 1.13.9
+NGINX_VERSION ?= 1.13.10
 NGINX_VARIANT ?= mainline
 PAGESPEED_VERSION ?= 1.13.35.2
 PSOL_VERSION ?= 1.13.35.2

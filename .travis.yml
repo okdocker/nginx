@@ -13,7 +13,7 @@ env:
     - PAGESPEED_VERSION=1.13.35.2
     - PSOL_VERSION=1.13.35.2
   matrix:
-    - NGINX_VERSION=1.13.12 VARIANT=mainline
+    - NGINX_VERSION=1.15.4 VARIANT=mainline
     - NGINX_VERSION=1.14.0 VARIANT=stable
 
 install:
